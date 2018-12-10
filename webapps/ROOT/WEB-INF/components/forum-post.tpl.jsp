@@ -1,4 +1,5 @@
 <div id="fpost">
+<div id="row-post-[@forum_id]" class="row-post parent">
 <div class="clear-float"></div>
 <div id="post-left-[@forum_id]" class="post-left">USER</div>
 <div id="post-right-[@forum_id]" class="post-right">
@@ -16,4 +17,5 @@
     <hr class="end-parent-hr" />
 </div>
 <div class="clear-float"></div>
+</div> <!-- .parent -->
 </div>

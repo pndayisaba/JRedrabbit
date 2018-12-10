@@ -2,10 +2,8 @@ import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.sql.*;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.redrabbit.common.BaseService;
 // Extend HttpServlet class
 public class Login extends HttpServlet {
  
@@ -28,7 +26,6 @@ public class Login extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY); //SC_FOUND: 302 redirect;
 	     }
 	  }
-	  BaseService bs = new BaseService();
       }
 	
       message = "LOGIN FROM HERE...";
@@ -93,9 +90,6 @@ public class Login extends HttpServlet {
 			                response.setContentType("text/html");
                 response.setHeader("Location","/account");
                 response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY); //SC_FOUND: 302 redirect;
-
-
-
 		      }
 
 

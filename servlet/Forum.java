@@ -1,11 +1,17 @@
 import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.sql.*;
+import java.util.Map;
+
+import java.util.ArrayList;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.redrabbit.common.BaseService;
+//import com.redrabbit.common;
 // Extend HttpServlet class
 public class Forum extends HttpServlet {
  
@@ -19,12 +25,12 @@ public class Forum extends HttpServlet {
       message = "Forum HERE...";
    }
 
-   public void doGet(HttpServletRequest request, HttpServletResponse response)
+   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
      
 	this.message = "Info Coming Soon...";
-      // Set response content type
-      response.setContentType("text/html");
+    // Set response content type
+    response.setContentType("text/html");
 	request.setAttribute("contentFile","login.jsp");
 	request.setAttribute("message",this.message);
 	RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
@@ -32,69 +38,130 @@ public class Forum extends HttpServlet {
 	
    }
    
-   public void doPost(HttpServletRequest request, HttpServletResponse response)
-		      throws ServletException, IOException {
-	 
+   public void doGet(HttpServletRequest request, HttpServletResponse response)
+		      throws ServletException, IOException 
+   {
+	   response.setContentType("text/html");
+	      
 	   try 
 	   {
-	     this.message = "Info Coming Soon...";
-	      // Set response content type
-	      response.setContentType("text/html");
-	      if(request.getParameterMap().containsKey("email") && request.getParameterMap().containsKey("password"))
-	      {
-		      String email = request.getParameter("email");
-		      String password = request.getParameter("password");
-		      
-		      DatabaseConnection dbc = new DatabaseConnection("CALL user_login_sps(?,?)");
-		      dbc.prepStatement.setString(1, email);
-		      dbc.prepStatement.setString(2, password);
+	     this.message = "... [Info Coming Soon] ...";
+	     	this.email = "";
+	     	Cookie[] cookies =  request.getCookies();
+    	  
+		     if(cookies !=null)
+		     {
+		     	for(Cookie cookie: cookies)
+		     	{
+		     	 if(cookie.getName().equals("email"))
+		     		 this.email = cookie.getValue(); 
+		     	}
+		      }
+	          
+		      DatabaseConnection dbc = new DatabaseConnection("CALL forum_sps(?)");
+		      dbc.prepStatement.setInt(1, 0);
+		      //dbc.prepStatement.setString(2, password);
 		      dbc.run();
 			
 		      GsonBuilder builder = new GsonBuilder();
-		      builder.setPrettyPrinting();      
-		      
+		      builder.setPrettyPrinting();     
 		      Gson gson = builder.create();
 		      
-		      if(dbc.DataSet.get(0).get("email").toString() !="")
+		      
+		      
+		      File file = new File(request.getServletContext().getRealPath("/WEB-INF/components/forum-post.tpl.jsp"));
+		      File postControlOptions = new File(request.getServletContext().getRealPath("/WEB-INF/components/forum-post-controls.tpl.jsp"));
+		      
+		      BufferedReader reader = new BufferedReader(new FileReader(file));
+		      String line = reader.readLine();
+		      // Main template;
+		      String template = "";
+		      while(line !=null)
 		      {
-		    	  Cookie cookie = new Cookie("email",dbc.DataSet.get(0).get("email").toString());
-		    	  cookie.setMaxAge(3600*5);
-		    	  cookie.setPath("/");
-		    	  cookie.setDomain(request.getServerName());
-		    	  
-		    	  response.addCookie(cookie);
-			
-		      	  String jsonStr = gson.toJson(dbc.DataSet);
-		      	  jsonStr = "<script>var responseData = "+jsonStr+"</script>";
-			  request.setAttribute("jsSnippet",jsonStr);
-
-		      	  this.message = "Congratulations!<br />You are now Signed into your account!";
-
-			                response.setContentType("text/html");
-                response.setHeader("Location","/account");
-                response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY); //SC_FOUND: 302 redirect;
-
-
-
+		    	  template += line;
+		    	  line = reader.readLine();
 		      }
-
-
-		      else
+		      
+		      // Controlls template;
+		      File file2 = new File(request.getServletContext().getRealPath("/WEB-INF/components/forum-post-controls.tpl.jsp"));
+		      
+		      BufferedReader reader2 = new BufferedReader(new FileReader(file2));
+		      line = reader2.readLine();
+		      String controlsTemplate = "";
+		      while(line !=null)
 		      {
+		    	  controlsTemplate += line;
+		    	  line = reader2.readLine();
+		      }
+		      
+		      // Replies
+		      File file3 = new File(request.getServletContext().getRealPath("/WEB-INF/components/forum-post-child.tpl.jsp"));
+		      
+		      BufferedReader reader3 = new BufferedReader(new FileReader(file3));
+		      line = reader3.readLine();
+		      String replyTemplate = "";
+		      while(line !=null)
+		      {
+		    	  replyTemplate += line;
+		    	  line = reader3.readLine();
+		      }
+		      
+		      
+		      int j = 0;
+		      this.message = ""; 
+		      ArrayList<String> columns = new ArrayList<String>();
+			  for(Map<String, Object> entry: dbc.DataSet)
+			  {	  
+				   if (entry.get("parent_forum_id") == null) //Main post
+				   {
 
+					   String tpl = template;
+					   String replaceWith = "";
+					   if(this.email !=null && !this.email.isEmpty() && entry.get("email") !=null && entry.get("email") !="" && this.email.equals(entry.get("email").toString()))
+						   replaceWith = controlsTemplate;
+						   
+					   tpl = tpl.replace("[@postControlsPlaceholder]", replaceWith);
+					     
+					   
+					   for(String key: entry.keySet())
+					   {
+						   String value = "";
+						   if(entry.get(key) !=null && entry.get(key) !="")
+							   value = entry.get(key).toString();
+						   tpl = tpl.replace("[@"+key+"]", value);
+					   }
+					   
+					   // BEGIN REPLIES;
+					   String childReply = "";
+					   for(Map<String, Object> entry2: dbc.DataSet)
+					   {
+						   
+						   if(entry2.get("parent_forum_id") !=null && entry.get("parent_forum_id") !="" && entry2.get("parent_forum_id")==entry.get("forum_id") )
+						   {   
+							   childReply += replyTemplate;
+							   // Custom controls
+							   String childReplaceWith = "";
+							   if(this.email !=null && !this.email.isEmpty() && this.email.equals(entry2.get("email").toString()))
+							   {
+								   childReplaceWith = controlsTemplate;
+							   }
+							   childReply = childReply.replace("[@postControlsPlaceholder]", childReplaceWith);
+							   // Add dynamic content
+							   for(String key2: entry2.keySet())
+							   {
+								   if(entry2.get(key2) !=null && entry2.get(key2) !="")
+									   childReply = childReply.replace("[@"+key2+"]", entry2.get(key2).toString());
+							   }
+						   }
+					   }
+					   tpl = tpl.replace("[@postReplyPlaceholder]", childReply);
+					   // END REPLIES;
+					   this.message +=tpl;
+				   }    
+			 }
 			 request.setAttribute("jsSnippet",this.errorMessage);
-		      }
-	      }
-	     else
-	    {
-		this.errorMessage = "<script type=\"text/javascript\">var responseData = "+
-		"[{message:\"Your email and password are required to sign you into your account! Try again to continue.\",success:0}];"+
-		"</script>";
-	    }
 	      
-	     PrintWriter out = response.getWriter();
-	     out.print("GREETINGS FROM PRINTWRITER");
-		request.setAttribute("contentFile","login.jsp");
+	    request.setAttribute("contentFile","forum.jsp");
 		request.setAttribute("message",this.message);
 		RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
 	      rd.forward(request,response);

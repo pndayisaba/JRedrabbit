@@ -26,7 +26,9 @@ request.setAttribute("tomcatExamplesUrl", "/examples/");
 <!DOCTYPE html>
 <html lang="en"> 
     <head>
+     <meta charset="UTF-8" /> 
         <script type="text/javascript" src="${hostPrefix}/js/rr.js"></script>
+        <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
         <link href="favicon.ico" rel="icon" type="image/x-icon" />
         <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
         <link href="${hostPrefix}/css/style.css" rel="stylesheet" type="text/css" />

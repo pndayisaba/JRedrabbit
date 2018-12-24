@@ -13,7 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 //import com.redrabbit.common;
 // Extend HttpServlet class
-public class Forum extends HttpServlet {
+public class CreateForumPost extends HttpServlet {
  
    private String message;
    protected String email;
@@ -26,20 +26,20 @@ public class Forum extends HttpServlet {
       message = "Forum HERE...";
    }
 
-   public void doPost(HttpServletRequest request, HttpServletResponse response)
+   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
      
-	this.message = "Info Coming Soon...";
+	this.message = "CREATE FORUM POST...";
     // Set response content type
     response.setContentType("text/html");
-	request.setAttribute("contentFile","login.jsp");
+	request.setAttribute("contentFile","create-post.jsp");
 	request.setAttribute("message",this.message);
-	RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+	RequestDispatcher rd = request.getRequestDispatcher("/index.jsp");
       rd.forward(request,response);
 	
    }
    
-   public void doGet(HttpServletRequest request, HttpServletResponse response)
+   public void doPost(HttpServletRequest request, HttpServletResponse response)
 		      throws ServletException, IOException 
    {
 	   response.setContentType("text/html");

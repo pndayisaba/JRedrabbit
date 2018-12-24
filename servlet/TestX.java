@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
+import com.redrabbit.common.*;
+
 public class TestX{
 	
 	
@@ -20,33 +22,19 @@ public class TestX{
    {
 	System.out.println("Hello Toronto");
 	//Need call proper stored procedure to get user by email and password;
-	DatabaseConnection dbc = new DatabaseConnection("CALL forum_sps(?)"); 
-	
+	//DatabaseConnection dbc = new DatabaseConnection("CALL user_sps(?)"); 
+	//RedRabbit redrabbit = new RedRabbit();
+	ArrayList<Map<String, Object>> userInfo = RedRabbit.getUserByEmail("obbb4545444mackenzie@redrabbit.com");
+	System.out.println("userInfo: "+userInfo);
 	try
 	{
-		dbc.prepStatement.setInt(1,0);
+		//dbc.prepStatement.setInt(1,"obbb4545444mackenzie@redrabbit.com");
 		//dbc.prepStatement.setString(2, "we"); 
+		//dbc.run();
 		
-		dbc.run();
+		//BaseService bs = new BaseService();
 		
-		ArrayList<String> columns = new ArrayList<String>();
-		
-		System.out.println("Size: "+columns.size());
-		int j = 0;
-		for(Map<String, Object> entry: dbc.DataSet)
-		{	
-			
-			
-			//System.out.println("entrySet: "+entry.entrySet());
-			for(String key: entry.keySet())
-			{
-				//if(key.toString().equals("title"))
-					
-				System.out.println("key: "+key);
-			}
-	        j++;
-	            
-		}
+		//System.out.println("BS: "+bs);
 	}
 	catch(Exception ex)
 	{

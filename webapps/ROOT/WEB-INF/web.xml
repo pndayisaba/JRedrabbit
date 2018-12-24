@@ -1,4 +1,4 @@
-?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
   contributor license agreements.  See the NOTICE file distributed with
@@ -59,24 +59,52 @@
    <url-pattern>/login</url-pattern>
 </servlet-mapping>
 
+<servlet>
+   <servlet-name>Signup</servlet-name>
+   <servlet-class>Signup</servlet-class>
+</servlet>
+
+<servlet-mapping>
+   <servlet-name>Signup</servlet-name>
+   <url-pattern>/signup</url-pattern>
+</servlet-mapping>
 
 
 <servlet>
    <servlet-name>Account</servlet-name>
    <servlet-class>Account</servlet-class>
 </servlet>
-
 <servlet-mapping>
    <servlet-name>Account</servlet-name>
    <url-pattern>/account</url-pattern>
 </servlet-mapping>
+
 <servlet>
    <servlet-name>Forum</servlet-name>
    <servlet-class>Forum</servlet-class>
 </servlet>
-
 <servlet-mapping>
    <servlet-name>Forum</servlet-name>
    <url-pattern>/forum</url-pattern>
 </servlet-mapping>
+
+
+<servlet>
+   <servlet-name>ThankYou</servlet-name>
+   <servlet-class>ThankYou</servlet-class>
+</servlet>
+<servlet-mapping>
+   <servlet-name>ThankYou</servlet-name>
+   <url-pattern>/signup/thankyou/*</url-pattern>
+</servlet-mapping>
+
+<servlet>
+   <servlet-name>CreateForumPost</servlet-name>
+   <servlet-class>CreateForumPost</servlet-class>
+</servlet>
+<servlet-mapping>
+   <servlet-name>CreateForumPost</servlet-name>
+   <url-pattern>/forum/create/*</url-pattern>
+</servlet-mapping>
+
 </web-app>

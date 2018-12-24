@@ -23,22 +23,14 @@ public class Account extends HttpServlet {
    public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 	 
-	   //If the user is not logged in redirect to the homepage;
-	   Cookie[] cookies = request.getCookies();
-	   if(cookies !=null)
-	   {
-	      for(Cookie cookie: cookies)
-	      {
-		      if(cookie.getName().equals("email") && cookie.getValue() !="")
-			      this.email = cookie.getValue();
-		  }
-	   }   
+	   //If the user is not logged in redirect to the login page;
+	   this.email = RedRabbit.getUserEmailFromCookie(request); 
 	      
-      if(this.email =="")
+      if(this.email.length() == 0)
       {
 	      response.setContentType("text/html");
           response.setStatus(HttpServletResponse.SC_FOUND);
-      	  response.setHeader("Location","/");
+      	  response.setHeader("Location","/login");
      }
      
 	this.message = "My Profile....";

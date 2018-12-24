@@ -10,7 +10,7 @@
 	</div><!--posted-by -->
 	<div id="post-desc-[@forum_id]" class="post-desc">[@description]</div>
 	<div id="take-action-[@forum_id]" class="take-action">
-		<a href="javascript];" id="reply-[@forum_id]" class="p-control reply">Reply </a>
+		<a href="javascript:;" id="reply-[@forum_id]" class="p-control reply">Reply </a>
 		[@postControlsPlaceholder]
     </div>
     [@postReplyPlaceholder]

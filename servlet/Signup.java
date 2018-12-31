@@ -14,7 +14,27 @@ public class Signup extends HttpServlet {
    private String errorMessage;
    private String[] requiredFields = {"email", "password", "password2", "first_name", "last_name"};
    private ArrayList<Map<String, String>> uiResponse = new ArrayList<Map<String, String>>();
+   private String contentFile = "signup.jsp";
+   private String lookupURI = "signup";
+   
 
+   
+   public void setProps(HttpServletRequest request)
+   {
+	   //set lookupURI;
+	   this.lookupURI = request.getRequestURI().toString().replaceAll("^\\/|\\/$","");
+	   
+	   // Set contentFile;
+	   switch(this.lookupURI)
+	   {
+	   		case "signup/thankyou":
+	   			this.contentFile = "thankyou.jsp";
+	   			break;
+   			default:
+   				this.contentFile = "signup.jsp";
+   				break;
+	   }
+   }
    public void init(HttpServletRequest request, HttpServletResponse response) throws ServletException {
       // Do required initialization
       
@@ -22,13 +42,13 @@ public class Signup extends HttpServlet {
 
    public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-     
+     this.setProps(request);
 	this.message = "SIGNUP Info Coming Soon...";
       // Set response content type
       response.setContentType("text/html");
-	  request.setAttribute("contentFile","signup.jsp");
+	  request.setAttribute("contentFile",this.contentFile);
 	  request.setAttribute("message",this.message);
-	  RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+	  RequestDispatcher rd = request.getRequestDispatcher("/index.jsp");
       rd.forward(request,response);
 	
    }
@@ -41,6 +61,7 @@ public class Signup extends HttpServlet {
 	   
 	    // Set response content type
 	    response.setContentType("text/html");
+	    this.setProps(request);
 	 
 	   try 
 	   {
@@ -193,9 +214,9 @@ public class Signup extends HttpServlet {
 	      
 	     PrintWriter out = response.getWriter();
 	     out.print("GREETINGS FROM PRINTWRITER");
-		request.setAttribute("contentFile","signup.jsp");
+		request.setAttribute("contentFile",this.contentFile);
 		request.setAttribute("uiResponse",this.message+this.uiResponse);
-		RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+		RequestDispatcher rd = request.getRequestDispatcher("/index.jsp");
 	      rd.forward(request,response);
 	   }
 	   catch(Exception ex)

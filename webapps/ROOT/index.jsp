@@ -22,7 +22,9 @@ request.setAttribute("year", sdf.format(new java.util.Date()));
 request.setAttribute("tomcatUrl", "https://tomcat.apache.org/");
 request.setAttribute("tomcatDocUrl", "/docs/");
 request.setAttribute("tomcatExamplesUrl", "/examples/");
+
 %>
+
 <!DOCTYPE html>
 <html lang="en"> 
     <head>
@@ -37,14 +39,14 @@ request.setAttribute("tomcatExamplesUrl", "/examples/");
     </head>
     <body>
      <div id="wrapper">
-           <div id="nav-wrap"><ul id="navigation" class="curved container">
+           <nav id="nav-wrap"><ul id="navigation" class="curved container">
                 <li><a href="/">Home</a></li>
                 <li><a href="/about">About</a></li>
                 <li><a href="/forum">Forum</a></li>
                 <li><a href="/signup">Signup</a></li>
                 <li><a href="/login">Login</a></li>
                 
-            </ul></div>
+            </ul></nav>
         <div id="content">
 		<jsp:include page="WEB-INF/${contentFile}"></jsp:include>
 		</div>  

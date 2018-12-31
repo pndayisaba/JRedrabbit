@@ -36,6 +36,9 @@ public class RedRabbit {
 	 */
 	public static String getUserEmailFromCookie(HttpServletRequest request)
 	{
+		if(request.getParameter("email") !=null)
+			return request.getParameter("email");
+		
 		Cookie[] cookies =  request.getCookies();
   	  
 	     if(cookies !=null)
@@ -49,6 +52,31 @@ public class RedRabbit {
 	     return "";
 	}
 	
+	/**
+	 * Parse input stream parameters. Useful for request method like PUT, DELETE...
+	 * 
+	 * @param request
+	 * @return HashMap
+	 */
+	public static HashMap<String, String> parseInputStreamParameters(HttpServletRequest request)  throws ServletException, IOException
+	{
+		// Parse PUT parameters
+		   BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+		   String params = br.readLine();
+		   
+		   String[] data = params.split("&");
+		   HashMap<String, String>  inputParams = new HashMap<String, String>();
+		   for(String s: data)
+		   {
+			   String[] Q = s.split("=");
+			   if(Q.length == 2)
+			   {
+				   inputParams.put(Q[0], Q[1]);
+			   }
+		   }
+		   
+		   return inputParams;
+	}
 	/*public static void redirectUser(HttpServletRequest request, HttpServletResponse response)
 	{
 		String email = "";

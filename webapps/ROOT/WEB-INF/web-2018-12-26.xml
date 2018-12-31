@@ -66,7 +66,7 @@
 
 <servlet-mapping>
    <servlet-name>Signup</servlet-name>
-   <url-pattern>/signup/*</url-pattern>
+   <url-pattern>/signup</url-pattern>
 </servlet-mapping>
 
 
@@ -85,7 +85,37 @@
 </servlet>
 <servlet-mapping>
    <servlet-name>Forum</servlet-name>
-   <url-pattern>/forum/*</url-pattern>
+   <url-pattern>/forum</url-pattern>
 </servlet-mapping>
+
+
+<servlet>
+   <servlet-name>ThankYou</servlet-name>
+   <servlet-class>ThankYou</servlet-class>
+</servlet>
+<servlet-mapping>
+   <servlet-name>ThankYou</servlet-name>
+   <url-pattern>/signup/thankyou/*</url-pattern>
+</servlet-mapping>
+
+<servlet>
+   <servlet-name>CreateForumPost</servlet-name>
+   <servlet-class>CreateForumPost</servlet-class>
+</servlet>
+<servlet-mapping>
+   <servlet-name>CreateForumPost</servlet-name>
+   <url-pattern>/forum/create/*</url-pattern>
+</servlet-mapping>
+
+
+<servlet>
+   <servlet-name>ThankYouForum</servlet-name>
+   <servlet-class>ThankYouForum</servlet-class>
+</servlet>
+<servlet-mapping>
+   <servlet-name>ThankYouForum</servlet-name>
+   <url-pattern>/forum/thankyou/*</url-pattern>
+</servlet-mapping>
+
 
 </web-app>

@@ -1,7 +1,5 @@
 import java.io.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.sql.*;
@@ -66,7 +64,7 @@ public class Forum extends HttpServlet {
 	   this.required.clear();
 	   
 	   // Verify that the user is signed in;
-	   this.email = RedRabbit.getUserEmailFromCookie(request);
+	   this.email = RedRabbit.getCookieByName(request, "email");
 	   if("".equals(this.email))
 	   {
 		   HashMap<String, String> error = new HashMap<String, String>();
@@ -102,7 +100,6 @@ public class Forum extends HttpServlet {
 		{
 			try
 			{
-				this.message = this.message.concat("CONTINUE AAAAAA");
 				DatabaseConnection dbc = new DatabaseConnection("CALL forum_spi(?,?,?,?);");
 				dbc.prepStatement.setString(1,request.getParameter("title"));
 				dbc.prepStatement.setString(2,request.getParameter("description"));
@@ -115,14 +112,12 @@ public class Forum extends HttpServlet {
 				
 				if(dbc.DataSet !=null && "1".equals(dbc.DataSet.get(0).get("success").toString()))
 				{
-					this.message = this.message.concat("CONTINUE QQQQ");
 					if(request.getParameter("is_ajax") !=null && "1".equals(request.getParameter("is_ajax").toString()))
 					{ 
 						// Create success response;
 						HashMap<String, String> resp = new HashMap<String, String>();
 						resp.put("success","1");
 						this.uiResponse.add(this.uiResponse.size(),resp);
-						this.message = this.message.concat("CONTINUE BBBB");
 					}
 					else
 					{
@@ -181,7 +176,7 @@ public class Forum extends HttpServlet {
 	   this.message = "";
 	   try 
 	   {
-	      	 this.email = RedRabbit.getUserEmailFromCookie(request);
+	      	 this.email = RedRabbit.getCookieByName(request, "email");
 	          
 		      DatabaseConnection dbc = new DatabaseConnection("CALL forum_sps(?)");
 		      dbc.prepStatement.setInt(1, 0);
@@ -308,22 +303,28 @@ public class Forum extends HttpServlet {
     */
    public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
    {
-	   response.setContentType("application/json");
+	   //response.setContentType("application/json");
+	   response.reset(); // don't included previous response;
+	   response.setContentType("text/html;charset=UTF-8;");
+	   response.setCharacterEncoding("UTF-8");
 	   response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
 	   response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
 	   response.setHeader("Expires", "0"); // Proxies.
 	   
-	   response.reset(); // don't included previous response;
 	   // Parse PUT parameters
 	   HashMap<String, String> inputParams = new HashMap<String, String>();
 	   inputParams = RedRabbit.parseInputStreamParameters(request);
+	   
+	   this.message = "";
+	  
+	   this.uiResponse.clear();
 	   this.required.clear();
 	   this.required.add("description");
 	   this.required.add("forum_id");
 	   
 	   // Check that user is signed in;
-	   this.email = RedRabbit.getUserEmailFromCookie(request);
-	   this.uiResponse.clear();
+	   this.email = RedRabbit.getCookieByName(request, "email");
+	   
 	   if("".equals(this.email))
 	   {
 		   HashMap<String, String> error = new HashMap<String, String>();
@@ -414,7 +415,7 @@ public class Forum extends HttpServlet {
 	   
 	   HashMap<String, String> inputParams = RedRabbit.parseInputStreamParameters(request);
 	   
-	   this.email = RedRabbit.getUserEmailFromCookie(request);
+	   this.email = RedRabbit.getCookieByName(request, "email");
 	   if(this.email == null || "".equals(this.email))
 	   {
 		   HashMap<String, String> resp = new HashMap<String, String>();

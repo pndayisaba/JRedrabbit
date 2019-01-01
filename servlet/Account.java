@@ -24,7 +24,7 @@ public class Account extends HttpServlet {
       throws ServletException, IOException {
 	 
 	   //If the user is not logged in redirect to the login page;
-	   this.email = RedRabbit.getUserEmailFromCookie(request); 
+	   this.email = RedRabbit.getCookieByName(request, "email"); 
 	      
       if(this.email.length() == 0)
       {

@@ -337,7 +337,6 @@ public class Forum extends HttpServlet {
 	   // If no errors so far, check for required fields;
 	   if(this.uiResponse.size() == 0)
 	   {
-		   this.required.add("forum_id");
 		   for(String s: this.required)
 		   {
 			   if(inputParams.get(s) == null)
@@ -358,10 +357,11 @@ public class Forum extends HttpServlet {
 		   // updating the database;
 		   if(this.uiResponse.size() == 0)
 		   {
-			   DatabaseConnection dbc = new DatabaseConnection("CALL forum_spu(?, ?, ?);");
-			   dbc.prepStatement.setString(1, inputParams.get("description"));
-			   dbc.prepStatement.setString(2, this.email);
-			   dbc.prepStatement.setString(3, inputParams.get("forum_id"));
+			   DatabaseConnection dbc = new DatabaseConnection("CALL forum_spu(?, ?, ?, ?);");
+			   dbc.prepStatement.setString(1, inputParams.get("title"));
+			   dbc.prepStatement.setString(2, inputParams.get("description"));
+			   dbc.prepStatement.setString(3, this.email);
+			   dbc.prepStatement.setString(4, inputParams.get("forum_id"));
 			   dbc.run();
 			   
 			   if(dbc.DataSet !=null && "1".equals(dbc.DataSet.get(0).get("success").toString()))

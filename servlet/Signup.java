@@ -28,7 +28,7 @@ public class Signup extends HttpServlet {
 	   switch(this.lookupURI)
 	   {
 	   		case "signup/thankyou":
-	   			this.contentFile = "thankyou.jsp";
+	   			this.contentFile = "thankyou-signup.jsp";
 	   			break;
    			default:
    				this.contentFile = "signup.jsp";
@@ -43,11 +43,9 @@ public class Signup extends HttpServlet {
    public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
      this.setProps(request);
-	this.message = "SIGNUP Info Coming Soon...";
       // Set response content type
       response.setContentType("text/html");
 	  request.setAttribute("contentFile",this.contentFile);
-	  request.setAttribute("message",this.message);
 	  RequestDispatcher rd = request.getRequestDispatcher("/index.jsp");
       rd.forward(request,response);
 	

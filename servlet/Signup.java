@@ -71,7 +71,6 @@ public class Signup extends HttpServlet {
 			   formData.put(s, request.getParameter(s));
 		   }
 		 
-	     this.message = "Info Coming Soon... [ PARAMNAMES: "+paramNames+" ]";
 	     this.uiResponse.clear();
 	     HashMap<String, String> error = new HashMap<String, String>();
 	      

@@ -26,15 +26,13 @@ ${uiResponse}
     <div><button type="submit" id="btn-submit">Submit</button></div>    
 </form>
 
-<script type="text/javascript" src="/js/redrabbit-form.js"></script>
-<script>
-var RedRabbitForm = new RedRabbitForm();
-
-/*var RedRabbitForm = new RedRabbitForm({
-    errors: <?=(!empty($signupResponseData) ? json_encode($signupResponseData) :'{ }')?>,
-    data:<?=(!empty($_POST) ? json_encode($_POST) : '[{ }]')?>
-    });
-RedRabbitForm.showHideErrors();
-RedRabbitForm.ShowFormValues(); 
-*/
+<!-- Load an external script -->
+<script type="text/javascript" src="${hostPrefix}/js/redrabbit-form.js"></script>
+<script type="text/javascript">
+var RRF = new RedRabbitForm({
+    errors: ${signupResponseErrors},
+    data:${signupFormData}
+});
+RRF.showHideErrors();
+RRF.displayFormValues();
 </script>

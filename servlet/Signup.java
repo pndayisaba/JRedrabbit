@@ -12,7 +12,7 @@ public class Signup extends HttpServlet {
    protected String email;
    protected String password;
    private String errorMessage;
-   private String[] requiredFields = {"email", "password", "password2", "first_name", "last_name"};
+   private String[] requiredFields = {"email", "password", "password2"};
    private ArrayList<Map<String, String>> uiResponse = new ArrayList<Map<String, String>>();
    private String contentFile = "signup.jsp";
    private String lookupURI = "signup";
@@ -60,13 +60,18 @@ public class Signup extends HttpServlet {
 	    // Set response content type
 	    response.setContentType("text/html");
 	    this.setProps(request);
-	 
+	    
+	    HashMap<String, String> formData = new LinkedHashMap<String, String>(); // collection of post data;
+		List<String> paramNames = new ArrayList<String>(request.getParameterMap().keySet());
 	   try 
 	   {
-		 //ArrayList<String> required = new ArrayList<String>(); // {"email", "password", "first_name", "last_name"};
+		   // create a collection of all post data;
+		   for(String s: paramNames)
+		   {
+			   formData.put(s, request.getParameter(s));
+		   }
 		 
-		 
-	     this.message = "Info Coming Soon...";
+	     this.message = "Info Coming Soon... [ PARAMNAMES: "+paramNames+" ]";
 	     this.uiResponse.clear();
 	     HashMap<String, String> error = new HashMap<String, String>();
 	      
@@ -157,51 +162,6 @@ public class Signup extends HttpServlet {
 	    			  }
 	    		  }
 	    	  }
-	    	  
-		      /*String email = request.getParameter("email");
-		      String password = request.getParameter("password");
-		      
-		      DatabaseConnection dbc = new DatabaseConnection("CALL user_login_sps(?,?)");
-		      dbc.prepStatement.setString(1, email);
-		      dbc.prepStatement.setString(2, password);
-		      dbc.run();
-			
-		      GsonBuilder builder = new GsonBuilder();
-		      builder.setPrettyPrinting();      
-		      
-		      Gson gson = builder.create();
-		      
-		      if(dbc.DataSet.get(0).get("email").toString() !="")
-		      {
-		    	  Cookie cookie = new Cookie("email",dbc.DataSet.get(0).get("email").toString());
-		    	  cookie.setMaxAge(3600*5);
-		    	  cookie.setPath("/");
-		    	  cookie.setDomain(request.getServerName());
-		    	  
-		    	  response.addCookie(cookie);
-			
-		      	  String jsonStr = gson.toJson(dbc.DataSet);
-		      	  jsonStr = "<script>var responseData = "+jsonStr+"</script>";
-			  request.setAttribute("jsSnippet",jsonStr);
-
-		      	  this.message = "Congratulations!<br />You are now Signed into your account!";
-
-			                response.setContentType("text/html");
-                response.setHeader("Location","/account");
-                response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY); //SC_FOUND: 302 redirect;
-		      }
-		      else
-		      {
-
-			 request.setAttribute("jsSnippet",this.errorMessage);
-		      }*/
-	    	  
-
-				/*response.setContentType("text/html");
-				response.setHeader("Location","/thankyou");
-				request.setAttribute("contentFile","thankyou.jsp");
-				response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY); //SC_FOUND: 302 redirect;
-				RequestDispatcher rd = request.getRequestDispatcher("index.jsp");*/
 	      }
 	     else
 	    {
@@ -210,10 +170,16 @@ public class Signup extends HttpServlet {
 		"</script>";
 	    }
 	      
-	     PrintWriter out = response.getWriter();
-	     out.print("GREETINGS FROM PRINTWRITER");
+	      GsonBuilder builder = new GsonBuilder();
+	      builder.setPrettyPrinting();      
+	      
+	      Gson gson = builder.create();
+	      String strErrors = gson.toJson(this.uiResponse);
+	      String strFormData = gson.toJson(formData);
+	 
 		request.setAttribute("contentFile",this.contentFile);
-		request.setAttribute("uiResponse",this.message+this.uiResponse);
+		request.setAttribute("signupResponseErrors",strErrors);
+		request.setAttribute("signupFormData", strFormData);
 		RequestDispatcher rd = request.getRequestDispatcher("/index.jsp");
 	      rd.forward(request,response);
 	   }

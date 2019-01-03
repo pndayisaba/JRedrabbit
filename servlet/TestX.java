@@ -28,6 +28,7 @@ public class TestX{
 	M.put("is_ajax", "1");
 	M.put("forum_id", "25");
 	
+	System.out.println("contains: "+"/post/54".contains("/post/\d"));
 	System.out.println("M.: "+M.get("is_ajax_Q"));
 	try
 	{

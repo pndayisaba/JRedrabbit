@@ -3,7 +3,8 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import java.sql.*;
 import java.net.URLDecoder;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.*;
 
@@ -63,45 +64,33 @@ public class RedRabbit {
 	public static HashMap<String, String> parseInputStreamParameters(HttpServletRequest request)  throws ServletException, IOException
 	{
 		// Parse PUT parameters
-		   BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
-		   String params = br.readLine();
-		   params = java.net.URLDecoder.decode(params, "UTF-8");
-		   String[] data = params.split("&");
-		   HashMap<String, String>  inputParams = new HashMap<String, String>();
-		   
-		   //String JJ = "";
-		   for(int j=0; j < data.length; ++j)
-		   {
-			   //JJ = JJ.concat(data[j]);
-			   String[] Q = data[j].split("=");
-			   if(Q.length == 2)
-			   {
-				   inputParams.put(Q[0], Q[1]);
-			   }
-		   }
-		   //inputParams.put("strParams", params);
-		   //inputParams.put("JJ",JJ);
-		   return inputParams;
-	}
-	/*public static void redirectUser(HttpServletRequest request, HttpServletResponse response)
-	{
-		String email = "";
-		//If the user is not logged in redirect to the homepage;
-	   Cookie[] cookies = request.getCookies();
-	   if(cookies !=null)
+	   BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+	   String params = br.readLine();
+	   params = java.net.URLDecoder.decode(params, "UTF-8");
+	   String[] data = params.split("&");
+	   HashMap<String, String>  inputParams = new HashMap<String, String>();
+	   
+	   for(int j=0; j < data.length; ++j)
 	   {
-	      for(Cookie cookie: cookies)
-	      {
-		      if(cookie.getName().equals("email") && cookie.getValue() !="")
-			      email = cookie.getValue();
-		  }
-	   }   
-      
-      if(email =="")
-      {
-	      response.setContentType("text/html");
-          response.setStatus(HttpServletResponse.SC_FOUND);
-      	  response.setHeader("Location","/");
-     }
-	}*/
+		   String[] Q = data[j].split("=");
+		   if(Q.length == 2)
+		   {
+			   inputParams.put(Q[0], Q[1]);
+		   }
+	   }
+	   return inputParams;
+	}
+	
+	/**
+	 * @param obj: Object such as ArrayList, HashMap ... to use for building a json;
+	 * @return String: JSON string;
+	 */
+    public static String createJson(Object obj)
+    {
+	   GsonBuilder builder = new GsonBuilder();
+	   builder.setPrettyPrinting();      
+	   Gson gson = builder.create();
+	   String strJSON = gson.toJson(obj);
+	   return strJSON;
+    }
 }

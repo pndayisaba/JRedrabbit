@@ -3,7 +3,9 @@ import java.lang.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.*;
+import java.time.*;
 import java.math.*;
 import org.apache.commons.lang3.math.*;
 import com.google.gson.Gson;
@@ -46,7 +48,7 @@ public class LoanAmortization extends HttpServlet {
 		      throws ServletException, IOException {
 	   
 		// Set response content type
-		response.setContentType("text/json");
+		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
 		try
 		{
@@ -157,8 +159,8 @@ public class LoanAmortization extends HttpServlet {
 				   newRow.put("monthInterest", this.monthInterest.toString() );
 				   newRow.put("monthPayment", this.monthPayment.toString() );
 				   newRow.put("payment number", Integer.toString(j+1) );
+				   newRow.put("date", LocalDate.now().plusMonths(j).toString());
 				   this.paymentSchedule.add(newRow);
-				   
 				   j++;
 			   }
 		   }

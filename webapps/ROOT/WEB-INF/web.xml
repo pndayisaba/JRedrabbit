@@ -88,4 +88,13 @@
    <url-pattern>/forum/*</url-pattern>
 </servlet-mapping>
 
+<servlet>
+  <servlet-name>LoanAmortization</servlet-name>
+  <servlet-class>LoanAmortization</servlet-class>
+</servlet>
+<servlet-mapping>
+  <servlet-name>LoanAmortization</servlet-name>
+  <url-pattern>/loan-amortization</url-pattern>
+</servlet-mapping>
+
 </web-app>

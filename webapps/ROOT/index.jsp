@@ -23,6 +23,10 @@ request.setAttribute("tomcatUrl", "https://tomcat.apache.org/");
 request.setAttribute("tomcatDocUrl", "/docs/");
 request.setAttribute("tomcatExamplesUrl", "/examples/");
 
+response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+response.setHeader("Expires", "0"); // Proxies.
+
 %>
 
 <!DOCTYPE html>
@@ -31,6 +35,8 @@ request.setAttribute("tomcatExamplesUrl", "/examples/");
      <meta charset="UTF-8" /> 
         <script type="text/javascript" src="${hostPrefix}/js/rr.js"></script>
         <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="/js/loan-amortization.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/superagent/4.1.0/superagent.js"></script>
         <link href="favicon.ico" rel="icon" type="image/x-icon" />
         <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
         <link href="${hostPrefix}/css/style.css" rel="stylesheet" type="text/css" />
@@ -51,7 +57,7 @@ request.setAttribute("tomcatExamplesUrl", "/examples/");
 		<jsp:include page="WEB-INF/${contentFile}"></jsp:include>
 		</div>  
             
-        </div>
+    </div>
     </body>
 
 </html>

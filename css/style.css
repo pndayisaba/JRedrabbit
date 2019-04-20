@@ -1,0 +1,37 @@
+
+.schedule-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 15px;
+  font-size: 25px;
+}
+
+.schedule-wrap {
+	width: 80%;
+	border: 1px solid grey;
+}
+
+.col {
+	width: 25%;
+}
+
+.payment-number.col {
+	width: 10%;
+}
+
+.schedule-row.heading {
+	background-color: #9C9;
+	font-weight: bold;
+}
+.schedule-row.even {
+	background-color: #D5DBDB;
+}
+
+.schedule-row.even:hover, 
+.schedule-row.odd:hover {
+	background-color: #797D7F;
+	color: #FFF;
+	font-weight: bold;
+	cursor: default;
+}

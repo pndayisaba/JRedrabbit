@@ -1,6 +1,3 @@
-<div>
-
-</div>
 <form name="loan-amort-schedule" id="loan-amort-schedule" method="POST" action="/loan-amortization">
 	<h1>Loan Amortization Schedule</h1>
 	<div class="row">
@@ -23,8 +20,12 @@
    <input type="text" name="interest" id="term" />
   </div>
   <button type="button" name="btn-loan" id="btn-loan" onclick="window.LA.postForm();">Show Schedule</button>
+  <!-- <button type="submit" name="btn-loan" id="btn-loan">Show Schedule</button> -->
 </form>
+<div class="schedule-wrap">
+</div>
 <script type="text/javascript">
 var LA = new LoanAmortization({formSelector: "#loan-amort-schedule", buttonSelector: "#btn-loan"});
 </script>
+
 

@@ -91,10 +91,21 @@
 <servlet>
   <servlet-name>LoanAmortization</servlet-name>
   <servlet-class>LoanAmortization</servlet-class>
+  <load-on-startup>1</load-on-startup>
 </servlet>
 <servlet-mapping>
   <servlet-name>LoanAmortization</servlet-name>
   <url-pattern>/loan-amortization</url-pattern>
 </servlet-mapping>
+
+<!--  Filter -->
+<filter>
+   <filter-name>LoanAmortizationFilter</filter-name>
+   <filter-class>LoanAmortizationFilter</filter-class>
+</filter>
+<filter-mapping>
+   <filter-name>LoanAmortizationFilter</filter-name>
+   <url-pattern>/loan-amortization__*</url-pattern>
+</filter-mapping>
 
 </web-app>

@@ -15,65 +15,60 @@ import java.util.HashMap;
  */
 
 public class DatabaseConnection {
-    private String serverName ="localhost";
-    private String dbName ="redrabbit";
-    private String userName ="webuser";
-    private String password="!@webuser100";
-    private MysqlDataSource ds = null;
-    // A collection of ResultSet
-    public ArrayList<Map<String, Object>> DataSet = new ArrayList<Map<String, Object>>(); 
-    public Connection conn = null;
-    public PreparedStatement prepStatement = null;
+  private String serverName ="localhost";
+  private String dbName ="redrabbit";
+  private String userName ="webuser";
+  private String password="!@webuser100";
+  private MysqlDataSource ds = null;
+  // A collection of ResultSet
+  public ArrayList<Map<String, Object>> DataSet = new ArrayList<Map<String, Object>>(); 
+  public Connection conn = null;
+  public PreparedStatement prepStatement = null;
+  
+  public DatabaseConnection(String query)
+  {
+  	this.ds = new MysqlDataSource();
+    this.ds.setUser(this.userName);
+    this.ds.setDatabaseName(dbName);
+    this.ds.setServerName(this.serverName);
+    this.ds.setPassword(this.password);
     
-    public DatabaseConnection(String query)
+    try
     {
-    	this.ds = new MysqlDataSource();
-        this.ds.setUser(this.userName);
-        this.ds.setDatabaseName(dbName);
-        this.ds.setServerName(this.serverName);
-        this.ds.setPassword(this.password);
-        
-        
-        try
-        {
-        	this.conn = this.ds.getConnection();
-	        this.prepStatement = this.conn.prepareStatement(query);   
-        }
-        catch(Exception ex)
-        {
-            ex.printStackTrace();	
-        }
+    	this.conn = this.ds.getConnection();
+      this.prepStatement = this.conn.prepareStatement(query);   
     }
+    catch(Exception ex)
+    {
+        ex.printStackTrace();	
+    }
+  }
     
-    public void run()
+  public void run()
+  {
+  	try
     {
-    	try
+      ResultSet rs = this.prepStatement.executeQuery();
+      ResultSetMetaData md =  rs.getMetaData();
+      int columnCount = md.getColumnCount();
+      while(rs.next())
+      {
+        HashMap<String,Object> row = new HashMap<String, Object>(); 
+        for(int q=1; q <= columnCount; q++)
         {
-	        ResultSet rs = this.prepStatement.executeQuery();
-	        
-            ResultSetMetaData md =  rs.getMetaData();
-            
-            int columnCount = md.getColumnCount();
-	        while(rs.next())
-	        {
-	            HashMap<String,Object> row = new HashMap<String, Object>(); 
-	           
-	           for(int q=1; q <= columnCount; q++)
-	           {
-                 row.put(md.getColumnName(q),rs.getObject(q));
-	           }
-	           this.DataSet.add(row);
-	        }
-        
-	        rs.close();
-	        this.prepStatement.close();
-	        this.conn.close();	   
+          row.put(md.getColumnName(q),rs.getObject(q));
         }
-        catch(Exception ex)
-        {
-            ex.printStackTrace();	
-        }
+        this.DataSet.add(row);
+      }
+
+      rs.close();
+      this.prepStatement.close();
+      this.conn.close();	   
+    } catch(Exception ex)
+    {
+      ex.printStackTrace();	
     }
+  }
 }
 
 

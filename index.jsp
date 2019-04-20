@@ -40,6 +40,7 @@ response.setHeader("Expires", "0"); // Proxies.
         <link href="favicon.ico" rel="icon" type="image/x-icon" />
         <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
         <link href="${hostPrefix}/css/style.css" rel="stylesheet" type="text/css" />
+        <link href="/css/style.css" rel="stylesheet" type="text/css" />
 	
 	${jsSnippet}
     </head>

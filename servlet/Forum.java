@@ -174,26 +174,18 @@ public class Forum extends HttpServlet {
     this.message = "";
     
     PrintWriter pw = response.getWriter();
-    pw.append("[doGet] FORUM STARTED ...");
-    pw.append("this.contentFile: "+this.contentFile);
     try 
     {
-      pw.append(" [Starting Try block]");
       this.email = RedRabbit.getCookieByName(request, "email");
-      pw.append(" [Starting Try block ..2]");    
       DatabaseConnection dbc = new DatabaseConnection("CALL forum_sps(?)");
-      pw.append(" [CONTINUE ..2 IIII]"); 
       dbc.prepStatement.setInt(1, 0);
-      pw.append(" [CONTINUE ..2AAAA]"); 
       dbc.run();
-      pw.append(" [CONTINUE ..3]"); 
       GsonBuilder builder = new GsonBuilder();
       builder.setPrettyPrinting();     
       Gson gson = builder.serializeNulls().create();
       
       this.forumPostData = gson.toJson(dbc.DataSet);
-  		pw.append(" [forumPostData: "+forumPostData+"]");  
-      File file = new File(request.getServletContext().getRealPath("/WEB-INF/components/forum-post.tpl.jsp"));
+  		File file = new File(request.getServletContext().getRealPath("/WEB-INF/components/forum-post.tpl.jsp"));
       
       BufferedReader reader = new BufferedReader(new FileReader(file));
       String line = reader.readLine();

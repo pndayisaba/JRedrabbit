@@ -133,10 +133,12 @@ public class RedRabbit {
 	  try
 	  {
 	    String catalinaBase = System.getProperty("catalina.base");
-      if (catalinaBase.isEmpty())
+	    String dirSeparator = File.separator;
+	    if (catalinaBase.isEmpty())
         System.out.println("Loading CatalinaBase Failed!");
       else 
-        return catalinaBase +"/webapps/JRedrabbit/";
+        // return catalinaBase+"/webapps/JRedrabbit/
+        return catalinaBase + dirSeparator +"webapps"+dirSeparator + "JRedrabbit" + dirSeparator;
 	  } catch(Exception ex)
 	  {
 	    System.out.println("RedRabbit.getSiteRoot() failed with message: " + ex.getMessage());

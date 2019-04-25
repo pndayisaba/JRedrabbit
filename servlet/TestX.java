@@ -15,15 +15,34 @@ import java.util.Map;
 import java.util.HashMap;
 import java.math.*;
 
-import com.redrabbit.common.*;
+import org.json.JSONObject;
+import org.apache.commons.io.FileUtils;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
+
+//import com.redrabbit.common.*;
 
 public class TestX{
 	
-	private BigDecimal principal = new BigDecimal(165000);
-	
-	
+  public static void readJSON() throws Exception
+  {
+    
+    
+  }
+  
   public static void main(String args[])
   {
-    TestX test = new TestX();
-	}
+    try
+    {
+      HashMap<String, String> config = RedRabbit.loadDatabaseCredentials();
+      
+      System.out.println("CONFIG: " + config);
+    } catch(Exception ex)
+    {
+      System.out.println("PROBLEM: ");
+      System.out.println(ex);
+    }
+    
+  }
 }

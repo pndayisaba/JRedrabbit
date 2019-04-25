@@ -25,7 +25,6 @@ public class Forum extends HttpServlet {
 
   public void init(HttpServletRequest request, HttpServletResponse response) throws ServletException 
   {
-    // Do required initialization
     this.required.add("description");
   }
 
@@ -51,11 +50,11 @@ public class Forum extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException 
   {
+    response.reset();
     response.setContentType("text/html");
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
     response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
     response.setHeader("Expires", "0"); // Proxies.
-    response.reset();
      
     this.setProps(request);
     this.message = "";
@@ -166,28 +165,27 @@ public class Forum extends HttpServlet {
 		}
   }
    
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
   {
+    
     response.reset();
     response.setContentType("text/html");
     this.setProps(request);
     this.message = "";
+    
+    PrintWriter pw = response.getWriter();
     try 
     {
       this.email = RedRabbit.getCookieByName(request, "email");
-	          
       DatabaseConnection dbc = new DatabaseConnection("CALL forum_sps(?)");
       dbc.prepStatement.setInt(1, 0);
-      //dbc.prepStatement.setString(2, password);
       dbc.run();
-		
       GsonBuilder builder = new GsonBuilder();
       builder.setPrettyPrinting();     
       Gson gson = builder.serializeNulls().create();
       
       this.forumPostData = gson.toJson(dbc.DataSet);
-  		      
-      File file = new File(request.getServletContext().getRealPath("/WEB-INF/components/forum-post.tpl.jsp"));
+  		File file = new File(request.getServletContext().getRealPath("/WEB-INF/components/forum-post.tpl.jsp"));
       
       BufferedReader reader = new BufferedReader(new FileReader(file));
       String line = reader.readLine();
@@ -286,7 +284,8 @@ public class Forum extends HttpServlet {
 	  }
 	  catch(Exception ex)
 	  {
-		  System.out.println(ex);
+	    System.out.println("Problem creating forum page.");
+		  System.out.println(ex.getStackTrace());
 	  }	
   }
    
@@ -305,7 +304,7 @@ public class Forum extends HttpServlet {
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
     response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
     response.setHeader("Expires", "0"); // Proxies.
-	   
+    PrintWriter pw = response.getWriter();
     // Parse PUT parameters
 	  HashMap<String, String> inputParams = new HashMap<String, String>();
 	  inputParams = RedRabbit.parseInputStreamParameters(request); 
@@ -385,7 +384,7 @@ public class Forum extends HttpServlet {
      Gson gson = builder.create();
      String strJSON = gson.toJson(this.uiResponse);
      	 	
-     PrintWriter pw = response.getWriter();
+     
      pw.print(strJSON);
   }
    

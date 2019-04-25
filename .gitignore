@@ -3,4 +3,5 @@
 .project
 .swp
 /servlet/*.class
+database.json
 

@@ -52,7 +52,7 @@ public class LoanAmortization extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response)
 		      throws ServletException, IOException 
   {
-    
+    response.reset();
   	response.setHeader("Cache-Control", "private, no-store, no-cache, must-revalidate");
   	response.setHeader("Pragma", "no-cache");
   	response.setHeader("Expires", "-1");

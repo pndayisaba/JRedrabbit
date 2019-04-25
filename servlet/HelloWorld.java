@@ -21,6 +21,9 @@ public class HelloWorld extends HttpServlet {
       // Actual logic goes here.
       PrintWriter out = response.getWriter();
       out.println("<h1>" + message + "</h1>");
+      out.println("<br />getServletContext: " + request.getServletContext() );
+      out.println("<br />getServletContext.getRealPath: " + request.getServletContext().getRealPath("/") );
+      out.println("<br />getPathTranslated: " + request.getPathTranslated() );
    }
 
    public void destroy() {

@@ -1,40 +1,45 @@
+import java.io.*;
 import com.mysql.cj.jdbc.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import java.util.*;
+import org.json.JSONObject;
+import com.google.gson.stream.JsonReader;
+import org.apache.commons.io.FileUtils;
 
 /**
  * @author pndayisaba;
  * Connect to database and return a record set;
  */
-
 public class DatabaseConnection {
-  private String serverName ="localhost";
-  private String dbName ="redrabbit";
-  private String userName ="webuser";
-  private String password="!@webuser100";
   private MysqlDataSource ds = null;
-  // A collection of ResultSet
   public ArrayList<Map<String, Object>> DataSet = new ArrayList<Map<String, Object>>(); 
   public Connection conn = null;
   public PreparedStatement prepStatement = null;
   
-  public DatabaseConnection(String query)
+  public DatabaseConnection(String query) // throws SQLException
   {
-  	this.ds = new MysqlDataSource();
-    this.ds.setUser(this.userName);
-    this.ds.setDatabaseName(dbName);
-    this.ds.setServerName(this.serverName);
-    this.ds.setPassword(this.password);
     
-    try
+  	try
     {
+  	  //query = "CALL forum_sps(0)";
+      this.ds = new MysqlDataSource();
+      this.ds.setServerTimezone("UTC");
+      HashMap<String, String> config = RedRabbit.loadDatabaseCredentials();
+      this.ds.setUser(config.get("userName"));
+      this.ds.setDatabaseName(config.get("dbName"));
+      this.ds.setServerName(config.get("serverName"));
+      this.ds.setPassword(config.get("password"));
     	this.conn = this.ds.getConnection();
       this.prepStatement = this.conn.prepareStatement(query);   
     }
@@ -69,6 +74,7 @@ public class DatabaseConnection {
       ex.printStackTrace();	
     }
   }
+ 
 }
 
 

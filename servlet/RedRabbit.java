@@ -5,20 +5,29 @@ import java.sql.*;
 import java.net.URLDecoder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import java.util.*;
+import java.util.regex.Pattern;
+
+import org.json.JSONObject;
+import com.google.gson.stream.JsonReader;
+import org.apache.commons.io.FileUtils;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.FileSystems;
 
 public class RedRabbit {
 	
-	/**
+  /**
 	 * Get user information from the database based on the parameter email;
 	 * @param email: user email for lookup
 	 * @return ArrayList;
 	 */
 	public static ArrayList<Map<String, Object>> getUserInfoByEmail(String email)
 	{
-		DatabaseConnection dbc = new DatabaseConnection("CALL user_sps(?)");
 		try {
+		  DatabaseConnection dbc = new DatabaseConnection("CALL user_sps(?)");
 			dbc.prepStatement.setString(1,email);
 			dbc.run();
 			//System.out.println("FROM getUserByEmail()! Return: "+dbc.DataSet);
@@ -26,7 +35,7 @@ public class RedRabbit {
 		}
 		catch (Exception ex)
 		{
-			//return ex.toString();
+			System.out.println(ex.getStackTrace());
 		}
 		
 		return new ArrayList<Map<String, Object>>();
@@ -63,8 +72,7 @@ public class RedRabbit {
 	 */
 	public static HashMap<String, String> parseInputStreamParameters(HttpServletRequest request)  throws ServletException, IOException
 	{
-		// Parse PUT parameters
-	   BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+	  BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
 	   String params = br.readLine();
 	   params = java.net.URLDecoder.decode(params, "UTF-8");
 	   String[] data = params.split("&");
@@ -81,16 +89,62 @@ public class RedRabbit {
 	   return inputParams;
 	}
 	
+  /**
+   * @param obj: Object such as ArrayList, HashMap ... to use for building a json;
+   * @return String: JSON string;
+   */
+  public static String createJson(Object obj)
+  {
+	  GsonBuilder builder = new GsonBuilder();
+    builder.setPrettyPrinting();      
+    Gson gson = builder.create();
+    String strJSON = gson.toJson(obj);
+    return strJSON;
+  }
+	
 	/**
-	 * @param obj: Object such as ArrayList, HashMap ... to use for building a json;
-	 * @return String: JSON string;
+	 * Load database connection props from json file;
+	 * @return HashMap;
 	 */
-    public static String createJson(Object obj)
-    {
-	   GsonBuilder builder = new GsonBuilder();
-	   builder.setPrettyPrinting();      
-	   Gson gson = builder.create();
-	   String strJSON = gson.toJson(obj);
-	   return strJSON;
-    }
+  public static HashMap<String, String> loadDatabaseCredentials()
+	{
+	  try
+	  {
+      HashMap<String, String> config = new HashMap<String, String>();
+      String webRoot = RedRabbit.getWebRoot();
+      File jsonFile = new File(webRoot + "WEB-INF/config/database.json");
+      JsonReader reader  = new JsonReader(new FileReader(jsonFile));
+  	  config = new Gson().fromJson(reader, HashMap.class);
+  	  return config;	
+	  } catch(Exception ex)
+	  {
+	    System.out.println("RedRabbit() Creating database config failed!");
+	    System.out.println("Error Message: " + ex.getMessage());
+	  }
+	  return new HashMap<String, String>();
+	}
+	
+	/**
+	 * Get site document root from system canonical path;
+	 * @return String;
+	 */
+	public static String getWebRoot()
+	{
+	  try
+	  {
+	    String catalinaBase = System.getProperty("catalina.base");
+	    String dirSeparator = File.separator;
+	    if (catalinaBase.isEmpty())
+        System.out.println("Loading CatalinaBase Failed!");
+      else 
+        // return catalinaBase+"/webapps/JRedrabbit/
+        return catalinaBase + dirSeparator +"webapps"+dirSeparator + "JRedrabbit" + dirSeparator;
+	  } catch(Exception ex)
+	  {
+	    System.out.println("RedRabbit.getSiteRoot() failed with message: " + ex.getMessage());
+	  } 
+    return "";
+	}
+	
+// -- END --	
 }

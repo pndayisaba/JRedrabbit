@@ -13,7 +13,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonObject;
 import org.json.*;
-import org.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 //import com.redrabbit.common;
 // Extend HttpServlet class
@@ -184,7 +183,7 @@ public class Forum extends HttpServlet {
 			else
 			{
 			  
-				String jsSnippet = "<script type=\"text/javascript\">var uiResponse = "+strJSON+"; var inputData = "+ inputDataJson +";</script>";
+				String jsSnippet = "<script type=\"text/javascript\">var uiResponse = "+strJSON+";</script>";
 				request.setAttribute("contentFile",this.contentFile);
 				request.setAttribute("jsSnippet",jsSnippet);
 				RequestDispatcher rd = request.getRequestDispatcher("/index.jsp");

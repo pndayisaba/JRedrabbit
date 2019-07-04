@@ -10,6 +10,10 @@ import java.util.HashMap;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonObject;
+import org.json.*;
+import org.apache.commons.lang3.StringUtils;
 //import com.redrabbit.common;
 // Extend HttpServlet class
 public class Forum extends HttpServlet {
@@ -51,15 +55,35 @@ public class Forum extends HttpServlet {
       throws ServletException, IOException 
   {
     response.reset();
-    response.setContentType("text/html");
+    response.setContentType("application/json; charset=UTF-8");
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
     response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
     response.setHeader("Expires", "0"); // Proxies.
-     
+    PrintWriter pw = response.getWriter();
+    
     this.setProps(request);
     this.message = "";
     this.uiResponse.clear();
     this.required.clear();
+    
+    JsonObject inputData = new JsonParser().parse("{}").getAsJsonObject();
+    String str, wholeStr = "";
+    try
+    {
+      BufferedReader br = request.getReader();
+      while ((str = br.readLine()) != null)
+      {
+        wholeStr += str;
+      }
+      GsonBuilder builderX = new GsonBuilder();
+      builderX.setPrettyPrinting();      
+      Gson gson = builderX.create();
+     
+      inputData = new JsonParser().parse(wholeStr).getAsJsonObject();
+      
+    } catch (Exception e) {
+      //logger.error("", e);
+    }
 	   
     // Verify that the user is signed in;
     this.email = RedRabbit.getCookieByName(request, "email");
@@ -72,16 +96,17 @@ public class Forum extends HttpServlet {
       this.uiResponse.add(this.uiResponse.size(),error);
       //error.clear();
     }
-    if(this.uiResponse.size() ==0)
+    
+    if(this.uiResponse.size() == 0)
     {
-      if(request.getParameter("forum_id") == null || "".equals(request.getParameter("forum_id").toString()))
+      if("".equals(inputData.get("forum_id").toString()))
       {
         this.required.add("title");
       }
 		   
       for(String s: this.required)
       {
-        if(request.getParameter(s) == null || request.getParameter(s).toString().trim().length() == 0)
+        if(inputData.get(s) == null || inputData.get(s).toString().trim().length() == 0)
         {
           HashMap<String, String> error = new HashMap<String, String>();
           error.put("name", s);
@@ -96,21 +121,21 @@ public class Forum extends HttpServlet {
     // If there are still no errors at this point, add the entries ino the database;
     if(this.uiResponse.size() ==0)
     {
-	     try
+       try
 	     {
-         DatabaseConnection dbc = new DatabaseConnection("CALL forum_spi(?,?,?,?);");
-         dbc.prepStatement.setString(1,request.getParameter("title"));
-         dbc.prepStatement.setString(2,request.getParameter("description"));
-         dbc.prepStatement.setString(3,this.email);
-         dbc.prepStatement.setString(4, request.getParameter("forum_id"));
+	       DatabaseConnection dbc = new DatabaseConnection("CALL forum_spi(?,?,?,?);");
+         dbc.prepStatement.setString(1, inputData.get("title") !=null ? inputData.get("title").toString() : "");
+         dbc.prepStatement.setString(2, inputData.get("description") !=null ? inputData.get("description").toString() : "");
+         dbc.prepStatement.setString(3, this.email !=null ? this.email : "");
+         dbc.prepStatement.setString(4, inputData.get("forum_id") !=null ? inputData.get("forum_id").toString() : "");
+         
          dbc.run();
-				
-         String S = "" +dbc.DataSet;
+				 String S = "" +dbc.DataSet;
          this.message = this.message.concat(S);
 				
          if(dbc.DataSet !=null && "1".equals(dbc.DataSet.get(0).get("success").toString()))
          {
-           if(request.getParameter("is_ajax") !=null && "1".equals(request.getParameter("is_ajax").toString()))
+           if(inputData.get("is_ajax") !=null && "1".equals(inputData.get("is_ajax").toString()))
            { 
              // Create success response;
              HashMap<String, String> resp = new HashMap<String, String>();
@@ -142,9 +167,10 @@ public class Forum extends HttpServlet {
     builder.setPrettyPrinting();      
     Gson gson = builder.create();
     String strJSON = gson.toJson(this.uiResponse);
-		if(request.getParameter("is_ajax") !=null && "1".equals(request.getParameter("is_ajax").toString()) )
+    String inputDataJson = gson.toJson(inputData);
+		if(inputData.get("is_ajax") !=null && "1".equals(inputData.get("is_ajax").toString()) )
 		{	
-			PrintWriter pw = response.getWriter();
+			
 			pw.print(strJSON);
 		}
 		else
@@ -156,6 +182,7 @@ public class Forum extends HttpServlet {
 			}
 			else
 			{
+			  
 				String jsSnippet = "<script type=\"text/javascript\">var uiResponse = "+strJSON+";</script>";
 				request.setAttribute("contentFile",this.contentFile);
 				request.setAttribute("jsSnippet",jsSnippet);
@@ -177,8 +204,9 @@ public class Forum extends HttpServlet {
     try 
     {
       this.email = RedRabbit.getCookieByName(request, "email");
-      DatabaseConnection dbc = new DatabaseConnection("CALL forum_sps(?)");
+      DatabaseConnection dbc = new DatabaseConnection("CALL forum_sps(?, ?)");
       dbc.prepStatement.setInt(1, 0);
+      dbc.prepStatement.setString(2, "");
       dbc.run();
       GsonBuilder builder = new GsonBuilder();
       builder.setPrettyPrinting();     
@@ -251,8 +279,9 @@ public class Forum extends HttpServlet {
 			   for(Map<String, Object> entry2: dbc.DataSet)
          {
 				   
-			     if(entry2.get("parent_forum_id") !=null && entry.get("parent_forum_id") !="" && entry2.get("parent_forum_id")==entry.get("forum_id") )
-			     {   
+			     if(entry2.get("parent_forum_id") !=null
+			       && entry2.get("parent_forum_id") == entry.get("forum_id")
+			     ) {   
 					   childReply = childReply.concat(replyTemplate);
 					   // Custom controls
 					   String childReplaceWith = "";

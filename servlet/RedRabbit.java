@@ -11,7 +11,6 @@ import java.util.regex.Pattern;
 import org.json.JSONObject;
 import com.google.gson.stream.JsonReader;
 import org.apache.commons.io.FileUtils;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -144,6 +143,23 @@ public class RedRabbit {
 	    System.out.println("RedRabbit.getSiteRoot() failed with message: " + ex.getMessage());
 	  } 
     return "";
+	}
+	
+	public static HashMap<String, Object> parseJsonDataFromRequest(HttpServletRequest request)
+	{
+	  String str, wholeStr = "";
+    try
+    {
+      BufferedReader br = request.getReader();
+      while ((str = br.readLine()) != null)
+      {
+        wholeStr += str;
+      } 
+    } catch (Exception e) {
+      //logger.error("", e);
+    }
+    
+    return new HashMap<String, Object>();
 	}
 	
 // -- END --	

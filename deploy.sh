@@ -6,7 +6,7 @@ wicPath="../WEB-INF/classes/";
 for f in *.java;
   do
     echo "Compiling $f";
-    javac $f;
+    javac $f -Xlint:unchecked;
     
     echo "Creating $wicPath$fileName.class";
     fileName=${f%.*};
